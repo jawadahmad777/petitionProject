@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const db = require("./db/db.js");
 const hb = require("express-handlebars");
-// const bc = require("bcr");
+const bcrypt = require("./db/bcrypt");
 var cookieSession = require("cookie-session");
 
 app.engine(
@@ -11,16 +11,6 @@ app.engine(
         defaultLayout: "main"
     })
 );
-//hash hashPassword
-// app.get("/hash-practic", (req, res) => {
-//     bc.hashPassword("trjkj").then(hashPassword => {
-//         // console.log("hashPassword", hashPassword);
-//         bc.checkPassword("trjkj", hashPassword).then(dopassmath=>{
-//             console.log('is' ,dopassmath);
-//         })
-//     });
-// });
-
 app.use(
     cookieSession({
         secret: `I'm always angry.`,
@@ -33,23 +23,33 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.set("view engine", "handlebars");
-app.get("/", (req, res) => {
+app.get("/home", (req, res) => {
+    //from/
     //db.getSigners();
     res.render("home");
 });
 
-app.post("/", (req, res) => {
+app.post("/home", (req, res) => {
+    //from/
     if (
-        req.body.firstname == "" ||
-        req.body.lastname == "" ||
+        // req.body.firstname == "" ||
+        // req.body.lastname == "" ||
         req.body.hidden == ""
     ) {
-        res.redirect("/");
+        res.redirect("/home");
     } else {
         db
-            .insertUser(req.body.firstname, req.body.lastname, req.body.hidden)
-            .then(newUser => {
-                req.session.signatureId = newUser.id;
+            .insertSignature(
+                req.session.userId,
+                req.session.firstname,
+                req.session.lastname,
+                req.body.hidden
+                // req.body.firstname,
+                // req.body.lastname,
+            )
+            .then(signature => {
+                //req.session.signatureId = newUser.id;
+                req.session.signatureId = signature.id;
                 res.redirect("/signed");
             });
     }
@@ -77,6 +77,97 @@ app.get("/signers", (req, res) => {
             listOfSigners: results
         });
     });
+});
+app.get("/register", (req, res) => {
+    res.render("register");
+});
+// app.post("/register", (req, res) => {
+//     if (
+//         req.body.firstname == "" ||
+//         req.body.lastname == "" ||
+//         req.body.email == "" ||
+//         req.body.password == ""
+//     ) {
+//         res.redirect("/register");
+//     } else {
+//         bcrypt.hashPassword(req.body.password).then(hashedPassword => {
+//             db.createUser(
+//                 req.body.firstname,
+//                 req.body.lastname,
+//                 req.body.email,
+//                 hashedPassword
+//             ).then(()=>{
+//                 res.redirect("/registe");
+//             });
+//         });
+//     }
+// });
+
+app.get("/signers", (req, res) => {
+    db.getSigners().then(results => {
+        // console.log(results);
+        res.render("signers", {
+            listOfSigners: results
+        });
+    });
+});
+app.get("/register", (req, res) => {
+    res.render("register");
+});
+app.post("/register", (req, res) => {
+    if (
+        req.body.firstname == "" ||
+        req.body.lastname == "" ||
+        req.body.email == "" ||
+        req.body.password == ""
+    ) {
+        res.redirect("/register");
+    } else {
+        bcrypt.hashPassword(req.body.password).then(hashedPassword => {
+            db
+                .createUser(
+                    req.body.firstname,
+                    req.body.lastname,
+                    req.body.email,
+                    hashedPassword
+                )
+                .then(results => {
+                    req.session.userId = results.id;
+                    req.session.firstname = req.body.firstname;
+                    req.session.lastname = req.body.lastname;
+                    req.session.email = req.body.email;
+                    req.session.hashedPassword = hashedPassword;
+                    res.redirect("/home");
+                });
+        });
+    }
+});
+app.get("/login", (req, res) => {
+    res.render("login");
+});
+
+app.post("/login", (req, res) => {
+    if (req.body.email == "" || req.body.password == "") {
+        res.redirect("/login");
+    } else {
+        db.getEmail(req.body.email).then(results => {
+            if (results.length == 0) {
+                res.redirect("/login");
+            } else {
+                const hashedPwd = results.hash_password;
+                bcrypt
+                    .checkPassword(req.body.password, hashedPwd)
+                    .then(checked => {
+                        if (checked) {
+                            console.log(checked);
+                        } else {
+                            console.log("results are there");
+                            res.redirect("/login");
+                        }
+                    });
+            }
+        });
+    }
 });
 app.listen(8080, () => {
     console.log("I'm lestining on port 8080 ...");

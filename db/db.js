@@ -24,11 +24,36 @@ exports.getSignersCount = function() {
     });
 };
 
-exports.insertUser = function(firstName, lastName, signature) {
+// exports.insertUser = function(firstName, lastName, signature) {
+//     const q =
+//         "INSERT INTO signatures (first_name, last_name, signature) VALUES ($1, $2 ,$3) RETURNING *";
+//
+//     const params = [firstName, lastName, signature];
+//     return db.query(q, params).then(results => {
+//         return results.rows[0];
+//     });
+// };
+exports.insertSignature = function(userId, firstName, lastName, signature) {
     const q =
-        "INSERT INTO signatures (first_name, last_name, signature) VALUES ($1, $2 ,$3) RETURNING *";
+        "INSERT INTO signatures (user_id,first_name, last_name, signature) VALUES ($1, $2 ,$3,$4) RETURNING *";
 
-    const params = [firstName, lastName, signature];
+    const params = [userId, firstName, lastName, signature];
+    return db.query(q, params).then(results => {
+        return results.rows[0];
+    });
+};
+exports.createUser = function(firstName, lastName, email, password) {
+    const q =
+        "INSERT INTO users (first_name, last_name, email, hash_password) VALUES ($1, $2 , $3, $4) RETURNING *";
+
+    const params = [firstName, lastName, email, password];
+    return db.query(q, params).then(results => {
+        return results.rows[0];
+    });
+};
+exports.getEmail = function(email) {
+    const q = "SELECT email,hash_password FROM users WHERE email = $1;";
+    const params = [email];
     return db.query(q, params).then(results => {
         return results.rows[0];
     });

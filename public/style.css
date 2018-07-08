@@ -20,7 +20,9 @@ img {
     margin: auto;
     margin-bottom: 18px;
 }
-input[type="text"] {
+input[type="text"],
+input[type="email"],
+input[type="password"] {
     width: 99%;
     height: 40px;
     background-color: azure;
