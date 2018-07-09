@@ -23,32 +23,22 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.set("view engine", "handlebars");
+
 app.get("/home", (req, res) => {
-    //from/
-    //db.getSigners();
     res.render("home");
 });
-
 app.post("/home", (req, res) => {
-    //from/
-    if (
-        // req.body.firstname == "" ||
-        // req.body.lastname == "" ||
-        req.body.hidden == ""
-    ) {
+    if (req.body.hidden == "") {
         res.redirect("/home");
     } else {
         db
             .insertSignature(
                 req.session.userId,
-                req.session.firstname,
-                req.session.lastname,
+                // req.session.firstname,
+                // req.session.lastname,
                 req.body.hidden
-                // req.body.firstname,
-                // req.body.lastname,
             )
             .then(signature => {
-                //req.session.signatureId = newUser.id;
                 req.session.signatureId = signature.id;
                 res.redirect("/signed");
             });
@@ -72,43 +62,14 @@ app.get("/signed", (req, res) => {
 });
 app.get("/signers", (req, res) => {
     db.getSigners().then(results => {
-        // console.log(results);
-        res.render("signers", {
-            listOfSigners: results
-        });
-    });
-});
-app.get("/register", (req, res) => {
-    res.render("register");
-});
-// app.post("/register", (req, res) => {
-//     if (
-//         req.body.firstname == "" ||
-//         req.body.lastname == "" ||
-//         req.body.email == "" ||
-//         req.body.password == ""
-//     ) {
-//         res.redirect("/register");
-//     } else {
-//         bcrypt.hashPassword(req.body.password).then(hashedPassword => {
-//             db.createUser(
-//                 req.body.firstname,
-//                 req.body.lastname,
-//                 req.body.email,
-//                 hashedPassword
-//             ).then(()=>{
-//                 res.redirect("/registe");
-//             });
-//         });
-//     }
-// });
-
-app.get("/signers", (req, res) => {
-    db.getSigners().then(results => {
-        // console.log(results);
-        res.render("signers", {
-            listOfSigners: results
-        });
+        if (results.length == 0) {
+            res.redirect("/signed");
+        } else {
+            console.log(results);
+            res.render("signers", {
+                listOfSigners: results
+            });
+        }
     });
 });
 app.get("/register", (req, res) => {
@@ -147,6 +108,7 @@ app.get("/login", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
+    var userInfo;
     if (req.body.email == "" || req.body.password == "") {
         res.redirect("/login");
     } else {
@@ -154,12 +116,18 @@ app.post("/login", (req, res) => {
             if (results.length == 0) {
                 res.redirect("/login");
             } else {
-                const hashedPwd = results.hash_password;
+                userInfo = results[0];
+                const hashedPwd = userInfo.hash_password;
                 bcrypt
                     .checkPassword(req.body.password, hashedPwd)
                     .then(checked => {
                         if (checked) {
-                            console.log(checked);
+                            req.session.userId = userInfo.id;
+                            req.session.firstname = userInfo.firstname;
+                            req.session.lastname = userInfo.lastname;
+                            req.session.email = userInfo.email;
+                            req.session.hashedPassword = hashedPwd;
+                            res.redirect("/home");
                         } else {
                             console.log("results are there");
                             res.redirect("/login");
@@ -169,6 +137,27 @@ app.post("/login", (req, res) => {
         });
     }
 });
+
+app.get("/profile", (req, res) => {
+    res.render("profile");
+});
+app.post("/profile", (req, res) => {
+    if (req.body.age == "" && req.body.city == "" && req.body.url == "") {
+        res.redirect("/home");
+    } else {
+        db
+            .insertProfile(
+                req.session.userId,
+                req.session.age,
+                req.session.city,
+                req.session.url
+            )
+            .then(() => {
+                res.redirect("/home");
+            });
+    }
+});
+
 app.listen(8080, () => {
     console.log("I'm lestining on port 8080 ...");
 });

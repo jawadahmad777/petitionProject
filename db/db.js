@@ -2,7 +2,8 @@ const spicedPg = require("spiced-pg");
 const db = spicedPg("postgres:postgres:postgres@localhost:5432/petition");
 
 exports.getSigners = function() {
-    const q = "SELECT first_name,last_name FROM signatures;";
+    const q =
+        "select signatures.user_id AS s_id, users.first_name || ' ' || users.last_name AS userinfo, user_profiles.age, user_profiles.city, user_profiles.url from signatures left join users on signatures.user_id = users.id left join user_profiles on signatures.user_id = user_profiles.user_id;";
     return db.query(q).then(results => {
         return results.rows;
     });
@@ -24,20 +25,11 @@ exports.getSignersCount = function() {
     });
 };
 
-// exports.insertUser = function(firstName, lastName, signature) {
-//     const q =
-//         "INSERT INTO signatures (first_name, last_name, signature) VALUES ($1, $2 ,$3) RETURNING *";
-//
-//     const params = [firstName, lastName, signature];
-//     return db.query(q, params).then(results => {
-//         return results.rows[0];
-//     });
-// };
-exports.insertSignature = function(userId, firstName, lastName, signature) {
+exports.insertSignature = function(userId, signature) {
     const q =
-        "INSERT INTO signatures (user_id,first_name, last_name, signature) VALUES ($1, $2 ,$3,$4) RETURNING *";
+        "INSERT INTO signatures (user_id,signature) VALUES ($1, $2) RETURNING *";
 
-    const params = [userId, firstName, lastName, signature];
+    const params = [userId, signature];
     return db.query(q, params).then(results => {
         return results.rows[0];
     });
@@ -52,9 +44,22 @@ exports.createUser = function(firstName, lastName, email, password) {
     });
 };
 exports.getEmail = function(email) {
-    const q = "SELECT email,hash_password FROM users WHERE email = $1;";
+    const q = "SELECT id,email,hash_password FROM users WHERE email = $1;";
     const params = [email];
     return db.query(q, params).then(results => {
-        return results.rows[0];
+        return results.rows;
     });
+};
+
+exports.insertProfile = function(userId, age, city, url) {
+    const q =
+        "INSERT INTO user_profiles (user_id, age, city, url) VALUES ($1, $2 , $3, $4) RETURNING *";
+
+    const params = [userId, age, city, url];
+    return db
+        .query(q, params)
+        .then(results => {
+            return results.rows[0];
+        })
+        .catch(err => console.log("insertProfile sql err " + err));
 };
