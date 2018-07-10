@@ -1,6 +1,21 @@
 <h1>Following are some of our members</h1>
+
 <ul>
   {{#each listOfSigners}}
-  <li>{{this.userinfo}} {{this.age}} {{this.city}} {{this.url}}</li>
+
+{{#if this.url}}
+	     {{#if this.city}}
+          <li><a href="{{this.url}}">{{this.userinfo}}</a> {{this.age}} <a href="./signers/{{this.city}}">{{this.city}}</a></li>
+	   {{else}}
+	    <li><a href="{{this.url}}">{{this.userinfo}}</a> {{this.age}}</li>
+	     {{/if}}
+  {{else}}
+	     {{#if this.city}}
+<li>{{this.userinfo}} {{this.age}} <a href="./signers/{{this.city}}">{{this.city}}</a></li>
+	     {{else}}
+<li>{{this.userinfo}} {{this.age}}</li>
+	     {{/if}}
+{{/if}}
+
   {{/each}}
-</ul>
+</ul></br>

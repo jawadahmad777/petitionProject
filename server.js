@@ -65,7 +65,6 @@ app.get("/signers", (req, res) => {
         if (results.length == 0) {
             res.redirect("/signed");
         } else {
-            console.log(results);
             res.render("signers", {
                 listOfSigners: results
             });
@@ -129,7 +128,6 @@ app.post("/login", (req, res) => {
                             req.session.hashedPassword = hashedPwd;
                             res.redirect("/home");
                         } else {
-                            console.log("results are there");
                             res.redirect("/login");
                         }
                     });
@@ -143,21 +141,126 @@ app.get("/profile", (req, res) => {
 });
 app.post("/profile", (req, res) => {
     if (req.body.age == "" && req.body.city == "" && req.body.url == "") {
-        res.redirect("/home");
+        res.redirect("/login");
     } else {
         db
             .insertProfile(
                 req.session.userId,
-                req.session.age,
-                req.session.city,
-                req.session.url
+                req.body.age,
+                req.body.city,
+                req.body.url
             )
             .then(() => {
                 res.redirect("/home");
             });
     }
 });
+app.get("/signers/:cityName", (req, res) => {
+    var cityName = req.params.cityName;
+    db.getSignersByCityName(cityName).then(citySigners => {
+        res.render("city", {
+            listOfSigners: citySigners
+        });
+    });
+});
 
+app.get("/profile/edit", (req, res) => {
+    db.getUserInfo(req.session.userId).then(results => {
+        req.session.firstname = results.first_name;
+        req.session.lastname = results.last_name;
+        req.session.email = results.email;
+        req.session.hashPassword = results.hash_password;
+        req.session.age = results.age;
+        req.session.city = results.city;
+        req.session.url = results.url;
+
+        res.render("edit", {
+            userData: results
+        });
+    });
+});
+app.post("/profile/edit", (req, res) => {
+    if (
+        req.body.firstname == "" &&
+        req.body.lastname == "" &&
+        req.body.email == "" &&
+        req.body.password == "" &&
+        req.body.age == "" &&
+        req.body.city == "" &&
+        req.body.url
+    ) {
+        res.redirect("/home");
+    } else {
+        if (!req.body.firstname == "") {
+            req.session.firstname = req.body.firstname;
+        }
+        if (!req.body.lastname == "") {
+            req.session.lastname = req.body.lastname;
+        }
+        if (!req.body.email == "") {
+            req.session.email = req.body.email;
+        }
+        if (!req.body.city == "") {
+            req.session.city = req.body.city;
+        }
+        if (!req.body.age == "") {
+            req.session.age = req.body.age;
+        }
+        if (!req.body.url == "") {
+            req.session.url = req.body.url;
+        }
+        if (!req.body.password == "") {
+            bcrypt
+                .hashedPassword(req.body.password)
+                .then(result => {
+                    req.session.hashedPassword = result;
+                })
+                .then(() => {
+                    db
+                        .updateUsers(
+                            req.session.userId,
+                            req.session.firstname,
+                            req.session.lastname,
+                            req.session.email,
+                            req.session.has
+                        )
+                        .then(() => {
+                            db
+                                .updateUserProfile(
+                                    req.session.userId,
+                                    req.session.age,
+                                    req.session.city,
+                                    req.session.url
+                                )
+                                .then(() => {
+                                    res.redirect("/profile/edit");
+                                });
+                        });
+                });
+        } else {
+            db
+                .updateUsers(
+                    req.session.userId,
+                    req.session.firstname,
+                    req.session.lastname,
+                    req.session.email,
+                    req.session.hashedPassword
+                )
+                .then(() => {
+                    db
+                        .updateUserProfile(
+                            req.session.userId,
+                            req.session.age,
+                            req.session.city,
+                            req.session.url
+                        )
+                        .then(() => {
+                            res.redirect("/profile/edit");
+                        });
+                });
+        }
+    }
+});
 app.listen(8080, () => {
     console.log("I'm lestining on port 8080 ...");
 });

@@ -1,0 +1,13 @@
+<h1>City of the signers</h1>
+
+<ul>
+  {{#each listOfSigners}}
+
+        {{#if this.url}}
+          <li><a href="{{this.url}}">{{this.userinfo}}</a> {{this.age}} </li>
+	   {{else}}
+	    <li>{{this.userinfo}} {{this.age}}</li>
+	     {{/if}}
+
+  {{/each}}
+</ul></br>
