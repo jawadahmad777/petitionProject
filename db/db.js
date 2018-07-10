@@ -45,7 +45,7 @@ exports.createUser = function(firstName, lastName, email, password) {
 };
 exports.getEmail = function(email) {
     const q =
-        "SELECT id, first_name, last_name, mail,hash_password FROM users WHERE email = $1;";
+        "SELECT id, first_name, last_name, email, hash_password FROM users WHERE email = $1;";
     const params = [email];
     return db.query(q, params).then(results => {
         return results.rows;
@@ -111,4 +111,15 @@ exports.updateUserProfile = function(userId, age, city, url) {
             return results.rows[0];
         })
         .catch(err => console.log("updateUserProfile sql err " + err));
+};
+
+exports.delete = function(userId) {
+    const q = "delete from signatures where user_id = $1;";
+    const params = [userId];
+    return db
+        .query(q, params)
+        .then(results => {
+            return results.rows[0];
+        })
+        .catch(err => console.log("delete sql err " + err));
 };

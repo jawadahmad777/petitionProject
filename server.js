@@ -71,17 +71,17 @@ app.get("/signers", (req, res) => {
         }
     });
 });
-app.get("/register", (req, res) => {
+app.get("/", (req, res) => {
     res.render("register");
 });
-app.post("/register", (req, res) => {
+app.post("/", (req, res) => {
     if (
         req.body.firstname == "" ||
         req.body.lastname == "" ||
         req.body.email == "" ||
         req.body.password == ""
     ) {
-        res.redirect("/register");
+        res.redirect("/");
     } else {
         bcrypt.hashPassword(req.body.password).then(hashedPassword => {
             db
@@ -222,7 +222,7 @@ app.post("/profile/edit", (req, res) => {
                             req.session.firstname,
                             req.session.lastname,
                             req.session.email,
-                            req.session.has
+                            req.session.hashedPassword
                         )
                         .then(() => {
                             db
@@ -260,6 +260,11 @@ app.post("/profile/edit", (req, res) => {
                 });
         }
     }
+});
+app.get("/deleteSignature", (req, res) => {
+    db.delete(req.session.userId).then(() => {
+        res.redirect("/home");
+    });
 });
 app.listen(8080, () => {
     console.log("I'm lestining on port 8080 ...");
