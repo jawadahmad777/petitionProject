@@ -83,22 +83,29 @@ app.post("/", (req, res) => {
     ) {
         res.redirect("/");
     } else {
-        bcrypt.hashPassword(req.body.password).then(hashedPassword => {
-            db
-                .createUser(
-                    req.body.firstname,
-                    req.body.lastname,
-                    req.body.email,
-                    hashedPassword
-                )
-                .then(results => {
-                    req.session.userId = results.id;
-                    req.session.firstname = req.body.firstname;
-                    req.session.lastname = req.body.lastname;
-                    req.session.email = req.body.email;
-                    req.session.hashedPassword = hashedPassword;
-                    res.redirect("/home");
+        db.checkEmail(req.body.email).then(result => {
+            if (result.length == 0) {
+                bcrypt.hashPassword(req.body.password).then(hashedPassword => {
+                    db
+                        .createUser(
+                            req.body.firstname,
+                            req.body.lastname,
+                            req.body.email,
+                            hashedPassword
+                        )
+                        .then(results => {
+                            req.session.userId = results.id;
+                            req.session.firstname = req.body.firstname;
+                            req.session.lastname = req.body.lastname;
+                            req.session.email = req.body.email;
+                            req.session.hashedPassword = hashedPassword;
+                            res.redirect("/home");
+                        });
                 });
+            } else {
+                console.log("email exits");
+                res.redirect("/");
+            }
         });
     }
 });
@@ -126,9 +133,9 @@ app.post("/login", (req, res) => {
                             req.session.lastname = userInfo.lastname;
                             req.session.email = userInfo.email;
                             req.session.hashedPassword = hashedPwd;
-                            res.redirect("/home");
+                            res.redirect("/signed");
                         } else {
-                            res.redirect("/login");
+                            res.redirect("/signed");
                         }
                     });
             }
@@ -268,6 +275,7 @@ app.get("/deleteSignature", (req, res) => {
         res.redirect("/home");
     });
 });
+
 app.listen(process.env.PORT || 8080, () => {
     console.log("I'm lestining on port 8080 ...");
 });

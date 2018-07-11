@@ -128,3 +128,11 @@ exports.delete = function(userId) {
         })
         .catch(err => console.log("delete sql err " + err));
 };
+
+exports.checkEmail = function(email) {
+    const q = "SELECT email FROM users WHERE email = $1;";
+    const params = [email];
+    return db.query(q, params).then(results => {
+        return results.rows;
+    });
+};
