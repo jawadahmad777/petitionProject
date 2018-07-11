@@ -3,7 +3,7 @@ let db;
 if (process.env.DATABASE_URL) {
     db = spicedPg(process.env.DATABASE_URL);
 } else {
-    const db = spicedPg("postgres:postgres:postgres@localhost:5432/petition");
+    db = spicedPg("postgres:postgres:postgres@localhost:5432/petition");
 }
 
 exports.getSigners = function() {
@@ -80,7 +80,7 @@ exports.getSignersByCityName = function(cityName) {
 };
 exports.getUserInfo = function(userId) {
     const q =
-        " select users.first_name, users.last_name, users.email, users.hash_password, user_profiles.age, user_profiles.city, user_profiles.url from users join user_profiles on users.id = user_profiles.user_id where users.id = $1;";
+        " select users.first_name, users.last_name, users.email, users.hash_password, user_profiles.age, user_profiles.city, user_profiles.url from users left join user_profiles on users.id = user_profiles.user_id where users.id = $1;";
     const params = [userId];
     return db.query(q, params).then(results => {
         return results.rows[0];

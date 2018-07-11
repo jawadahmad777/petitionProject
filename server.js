@@ -166,6 +166,8 @@ app.get("/signers/:cityName", (req, res) => {
 
 app.get("/profile/edit", (req, res) => {
     db.getUserInfo(req.session.userId).then(results => {
+        console.log(results);
+        console.log(req.session.userId);
         req.session.firstname = results.first_name;
         req.session.lastname = results.last_name;
         req.session.email = results.email;
