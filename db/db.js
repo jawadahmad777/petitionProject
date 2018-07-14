@@ -1,5 +1,5 @@
 const spicedPg = require("spiced-pg");
-let db;
+var db;
 if (process.env.DATABASE_URL) {
     db = spicedPg(process.env.DATABASE_URL);
 } else {

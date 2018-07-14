@@ -99,11 +99,13 @@ app.post("/", (req, res) => {
                             req.session.lastname = req.body.lastname;
                             req.session.email = req.body.email;
                             req.session.hashedPassword = hashedPassword;
+                            req.session.login = true;
                             res.redirect("/home");
                         });
                 });
             } else {
-                console.log("email exits");
+                console.log(result[0].email + " already exists");
+                //alert(result[0].email + " already exists");
                 res.redirect("/");
             }
         });
@@ -133,6 +135,7 @@ app.post("/login", (req, res) => {
                             req.session.lastname = userInfo.lastname;
                             req.session.email = userInfo.email;
                             req.session.hashedPassword = hashedPwd;
+                            req.session.login = true;
                             res.redirect("/signed");
                         } else {
                             res.redirect("/signed");
@@ -271,11 +274,19 @@ app.post("/profile/edit", (req, res) => {
     }
 });
 app.get("/deleteSignature", (req, res) => {
-    db.delete(req.session.userId).then(() => {
-        res.redirect("/home");
-    });
+    if (req.session.login == true) {
+        db.delete(req.session.userId).then(() => {
+            res.redirect("/home");
+        });
+    } else {
+        req.session.login = false;
+        res.redirect("/login");
+    }
 });
-
+app.get("/logout", (req, res) => {
+    req.session.login = false;
+    res.redirect("/login");
+});
 app.listen(process.env.PORT || 8080, () => {
     console.log("I'm lestining on port 8080 ...");
 });

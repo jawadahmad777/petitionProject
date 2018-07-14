@@ -1,21 +1,93 @@
+<!-- <ul id = 'signers'>{{#each listOfSigners}}{{#if this.url}}{{#if this.city}}
+ <li><a href="{{this.url}}">{{this.userinfo}}</a> {{this.age}} <a href="./signers/{{this.city}}">{{this.city}}</a></li>
+{{else}}<li><a href="{{this.url}}">{{this.userinfo}}</a> {{this.age}}</li>{{/if}}{{else}}
+{{#if this.city}}<li>{{this.userinfo}} {{this.age}} <a href="./signers/{{this.city}}">{{this.city}}</a></li>
+{{else}}<li>{{this.userinfo}} {{this.age}}</li>{{/if}}{{/if}}{{/each}}</ul></br> -->
+<nav class = nav>
+    <div>
+        <li><a href="/">Home Page</a></li>
+        <li><a href="./signers">See all {{count}} signers</a></li>
+        <li><a href="./profile/edit">Edit your profile</a></li>
+        <li><a href="./deleteSignature">Delete your Sign</a></li>
+</div>
+</nav>
 <h4>Following are some of our members</h4>
-
-<ul>
+<table>
   {{#each listOfSigners}}
+  <tr>
+<th>Name</th>
+<th>Age</th>
+<th> city</th>
+</tr>
 
-{{#if this.url}}
+ {{#if this.url}}
+ <tr>
 	     {{#if this.city}}
-          <li><a href="{{this.url}}">{{this.userinfo}}</a> {{this.age}} <a href="./signers/{{this.city}}">{{this.city}}</a></li>
+          <td>
+              <a href="{{this.url}}">{{this.userinfo}}</a></td>
+              <td> {{this.age}}</td>
+             <td> <a href="./signers/{{this.city}}">{{this.city}}</a></td>
+            </tr>
+
+
 	   {{else}}
-	    <li><a href="{{this.url}}">{{this.userinfo}}</a> {{this.age}}</li>
-	     {{/if}}
-  {{else}}
-	     {{#if this.city}}
-<li>{{this.userinfo}} {{this.age}} <a href="./signers/{{this.city}}">{{this.city}}</a></li>
+<tr>
+            <td><a href="{{this.url}}">{{this.userinfo}}</a></td> <td>{{this.age}}</td>
+            </tr>
+{{/if}}
+       {{else}}
+	    <tr> <td>{{#if this.city}}</td>
+ <td>{{this.userinfo}} {{this.age}} </td><td><a href="./signers/{{this.city}}">{{this.city}}</a></td>
+</tr>
+
+
 	     {{else}}
-<li>{{this.userinfo}} {{this.age}}</li>
+
+
+                    {{this.userinfo}} {{this.age}}
+
+
 	     {{/if}}
 {{/if}}
 
   {{/each}}
-</ul></br>
+</table>
+<br>
+<div class="first">
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
+dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+mollit anim id est laborum.
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
+dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+mollit anim id est laborum.
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
+dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+mollit anim id est laborum.
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
+dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+mollit anim id est laborum.
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
+dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+mollit anim id est laborum.
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
+dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+mollit anim id est laborum.
+</div>

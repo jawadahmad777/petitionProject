@@ -1,19 +1,28 @@
 * {
     margin: 0;
 }
+body {
+    background-color: #5b2d39;
+}
 h4 {
     font-size: 20px;
     width: 100%;
     text-align: center;
     margin-top: 30px;
     margin-bottom: 40px;
+    color: white;
+    opacity: 0.7;
+}
+p {
+    color: white;
 }
 #canvas {
     background-color: azure;
     /* width: 100%; */
 }
 img {
-    border: 2px solid blue;
+    border: 2px solid azure;
+    width: 60%;
 }
 #form {
     width: 30%;
@@ -43,4 +52,102 @@ button:hover {
     font-style: italic;
     font-size: 18px;
     border: 0.5px solid azure;
+}
+p {
+    display: block;
+    width: 99%;
+    height: 40px;
+    margin-bottom: 19px;
+    margin-top: 50px;
+    padding: 4px;
+    font-size: 18px;
+}
+.login {
+    padding-top: 10px;
+    display: block;
+
+    height: 40px;
+    padding: 4px;
+
+    text-decoration: none;
+}
+.nav {
+    background-color: #4f2530;
+    font-size: 22px;
+    text-align: left;
+    padding: 30px 0;
+    width: 100%;
+}
+.nav > div {
+    margin-left: 10%;
+}
+.nav > div > li {
+    list-style: none;
+    display: inline;
+
+    padding: 0 20px 0 20px;
+}
+.nav > div > li > a {
+    text-decoration: none;
+    color: #e51b1b;
+}
+.nav > div > li > a:hover {
+    color: white;
+}
+.signed {
+    width: 90%;
+    margin-left: 5%;
+    margin-right: 5%;
+}
+table {
+    width: 50%;
+    text-align: center;
+    margin-left: 25%;
+    border-collapse: collapse;
+}
+th,
+td {
+    /* border: 1px solid black; */
+    height: 40px;
+}
+a {
+    text-decoration: none;
+}
+tr:nth-child(even) {
+    background-color: darkcyan;
+}
+tr:nth-child(odd) {
+    background-color: darkseagreen;
+}
+td:hover {
+    background-color: azure;
+}
+th:hover {
+    background-color: white;
+}
+.first {
+    width: 90%;
+    margin-left: 5%;
+    color: white;
+    font-size: 17px;
+    opacity: 0.3;
+}
+#canvas {
+    margin-left: 60px;
+}
+@media screen and (max-width: 480px) {
+    .nav > div > li > a {
+        text-decoration: underline;
+        display: block;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    .first {
+        margin-top: 60px;
+    }
+}
+.unsign {
+    margin-bottom: 10px;
+    color: #4f2530;
+    margin-left: 70px;
 }
